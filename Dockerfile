@@ -1,15 +1,12 @@
-#build stage
-FROM golang:alpine AS builder
-RUN apk add --no-cache git
+FROM quay.io/projectquay/golang:1.20 as builder
+
 WORKDIR /go/src/app
 COPY . .
-RUN go get -d -v ./...
-RUN go build -o /go/bin/app -v ./...
+ARG TARGETARCH TARGETOS
+RUN make build TARGETARCH=$TARGETARCH TARGETOS=$TARGETOS
 
-#final stage
-FROM alpine:latest
-RUN apk --no-cache add ca-certificates
-COPY --from=builder /go/bin/app /app
-ENTRYPOINT /app
-LABEL Name=tbot Version=0.0.1
-EXPOSE 3000
+FROM scratch
+WORKDIR /
+COPY --from=builder /go/src/app/t-bot .
+COPY --from=alpine:latest /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+ENTRYPOINT ["./t-bot", "start"]

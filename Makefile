@@ -1,71 +1,30 @@
-APP=$(shell basename $(shell git remote get-url origin))
-REGISTRY=nirev23
+APP := $(shell basename $(shell git remote get-url origin) .git)
+REGISTRY := nirev23
 VERSION=$(shell git describe --tags --abbrev=0)-$(shell git rev-parse --short HEAD)
-IMAGE_ID=$(shell docker images -q)
-#TEST=ON
-
-.DEFAULT_GOAL := help
-
-.PHONY: help
-help:
-	@echo "Use 'make <target>' where <target> is one of:"
-	@echo ""
-	@echo "  format - formats Go programs"
-	@echo "  build - build docker image"
-	@echo "  lint - prints out style mistakes"
-	@echo "  test - testing go packages"
-	@echo "  clean - delete result file"
-	@echo ""
-
-
-.PHONY: build
-build:
-	@echo "Use 'make <target>' where <target> is one of:"
-	@echo ""
-	@echo "  linux - build docker image for linux"
-	@echo "  darwin - build docker image for darwin"
-	@echo "  windows - build docker image for windows"
-	@echo "  arm - build docker image for arm64"
-	@echo ""
-
-.PHONY: linux
-linux: format get
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -o telebot -ldflags "-X="github.com/nirev23/telebot/cmd.appversion=${VERSION}
-
-.PHONY: darwin
-darwin: format get
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -v -o telebot -ldflags "-X="github.com/nirev23/telebot/cmd.appversion=${VERSION}
-
-.PHONY: windows
-windows: format get
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -v -o telebot -ldflags "-X="github.com/nirev23/telebot/cmd.appversion=${VERSION}
-
-.PHONY: arm
-arm: format get
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -v -o telebot -ldflags "-X="github.com/nirev23/telebot/cmd.appversion=${VERSION}
+TARGETOS=linux #linux darwin windows
+TARGETARCH=amd64 #amd64 arm64
 
 format:
 	gofmt -s -w ./
 
 lint:
 	golint
- 
+
 test:
 	go test -v
 
-get: 
+get:
 	go get
 
+build: format get
+	CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -v -o t-bot -ldflags "-X="github.com/nirev23/t-bot/cmd.appVersion=${VERSION}
+
 image:
-	docker build . -t ${REGISTRY}/${APP}:${VERSION}
+	docker build . -t ${REGISTRY}/${APP}:${VERSION}-${TARGETARCH}  --build-arg TARGETARCH=${TARGETARCH} --build-arg TARGETOS=${TARGETOS}
 
 push:
-	docker push ${REGISTRY}/${APP}:${VERSION}
+	docker push ${REGISTRY}/${APP}:${VERSION}-${TARGETARCH}
 
 clean:
-ifeq (${IMAGE_ID},)        
-	@rm -rf telebot
-else
-	@docker rmi ${IMAGE_ID}
-endif
-#if image present - delete it, if not present - delete rendered app
+	rm -rf kbot
+	docker rmi ${REGISTRY}/${APP}:${VERSION}-${TARGETARCH}
