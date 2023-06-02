@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: "nirev23"
-  tag: ""
+  tag: "v1.0.2-a764abd"
   arch: amd64
 secret:
   name: "tbot"
