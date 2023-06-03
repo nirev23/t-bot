@@ -1,8 +1,8 @@
 APP := $(shell basename $(shell git remote get-url origin) .git)
 REGISTRY := ghcr.io/nirev23
 VERSION=$(shell git describe --tags --abbrev=0)-$(shell git rev-parse --short HEAD)
-TARGETOS=linux #linux darwin windows
-TARGETARCH=amd64 #amd64 arm64
+TARGETOS='linux' #linux darwin windows
+TARGETARCH='amd64' #amd64 arm64
 
 format:
 	gofmt -s -w ./
