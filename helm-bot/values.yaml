@@ -5,7 +5,7 @@ replicaCount: 1
 image:
   registry: "ghcr.io"
   repository: "ghcr.io/nirev23"
-  tag: "v1.0.2-75c9b0c"
+  tag: "v1.0.2-4763754"
   os: linux
   arch: amd64
 secret:
