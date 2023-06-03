@@ -3,8 +3,10 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
+  registry: "ghcr.io"
   repository: "nirev23"
   tag: "v1.0.2-a764abd"
+  os: linux
   arch: amd64
 secret:
   name: "tbot"
