@@ -2,7 +2,7 @@ name: T-BOT-CICD
 
 on:
   push:
-    branches: ['develop']
+    branches: ['main']
 
 jobs: 
   ci:
