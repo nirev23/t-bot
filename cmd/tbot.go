@@ -14,10 +14,6 @@ import (
 )
 
 var (
-	appVersion = "Version"
-)
-
-var (
 	// TeleToken bot
 	TeleToken = os.Getenv("TELE_TOKEN")
 )
