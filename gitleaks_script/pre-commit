@@ -1,1 +1,10 @@
-./.git/hooks/gitleaks detect --source . -v
+gitleaksOutput=$(./.git/hooks/gitleaks detect --source . -v  --report-format json --report-path gitleaks-rep>
+gitleaksExitCode=$?
+echo "$gitleaksExitCode"
+if [ $gitleaksExitCode -eq 1 ]; then
+        echo "Знайдено секрети!!!"
+        echo "$gitleaksOutput"
+        exit 1
+else
+        echo "Перевірка секретів пройшла успішно!"
+fi
